@@ -1,13 +1,13 @@
 # =============================================================================
 # AgileIQ — AI-Powered Sprint Intelligence System
-# Author: Martina Jojo
-# Version: 1.0
 # Phase: Phase 3 — AI Build
 # Description: Sends sprint standup notes to Google Gemini API and generates
 #              a structured, stakeholder-ready sprint status report.
+#              Includes rule-based blocker detection layer.
 # =============================================================================
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import os
 
 # =============================================================================
@@ -19,10 +19,12 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     raise EnvironmentError(
         "GEMINI_API_KEY environment variable not set. "
-        "Please set it before running this script."
+        "Please set it before running this script.\n"
+        "Mac/Linux: export GEMINI_API_KEY='your-key-here'\n"
+        "Windows:   set GEMINI_API_KEY=your-key-here"
     )
 
-genai.configure(api_key=GEMINI_API_KEY)
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 # =============================================================================
 # SECTION 2: INPUT — Simulated Sprint Standup Notes
@@ -207,7 +209,53 @@ Numbered list of 2–4 specific, actionable recommendations for the PM or Scrum 
 """
 
 # =============================================================================
-# SECTION 4: AI CALL — Send Notes to Gemini and Generate Report
+# SECTION 4: BLOCKER DETECTION — Rule-Based Keyword Scanner
+# =============================================================================
+# This function runs BEFORE the AI call.
+# It scans standup notes for known blocker keywords and prints a
+# BLOCKERS FLAGGED section immediately — no AI required, instant, reliable.
+# Filters out "Blockers: None" lines so only real issues are surfaced.
+# =============================================================================
+
+def detect_blockers(notes: str) -> list:
+    """
+    Scans standup notes for blocker keywords.
+    Filters out lines that say 'none' (i.e. no blocker reported).
+    Returns a list of lines containing genuine blocker language.
+
+    Args:
+        notes: The raw standup notes string.
+
+    Returns:
+        A list of lines that contain a blocker keyword but are NOT 'none' lines.
+    """
+    keywords = ["blocked", "blocker", "delay", "dependency", "waiting on"]
+
+    # Phrases that indicate NO blocker — filter these out
+    none_phrases = ["none.", "none currently", "blockers: none", "no blockers"]
+
+    flagged_lines = []
+
+    for line in notes.strip().split("\n"):
+        line_lower = line.lower()
+
+        # Skip blank or very short lines
+        if not line.strip() or len(line.strip()) < 10:
+            continue
+
+        # Skip lines that are just saying "no blocker"
+        if any(phrase in line_lower for phrase in none_phrases):
+            continue
+
+        # Flag lines that contain a blocker keyword
+        if any(keyword in line_lower for keyword in keywords):
+            flagged_lines.append(line.strip())
+
+    return flagged_lines
+
+
+# =============================================================================
+# SECTION 5: AI CALL — Send Notes to Gemini and Generate Report
 # =============================================================================
 
 def generate_sprint_report(notes: str, system_prompt: str) -> str:
@@ -221,44 +269,81 @@ def generate_sprint_report(notes: str, system_prompt: str) -> str:
     Returns:
         The AI-generated sprint status report as a string.
     """
-    model = genai.GenerativeModel(
-        model_name="gemini-2.5-flash",
-        system_instruction=system_prompt
-    )
-
-    # Construct the user message — clear instructions with the raw data
     user_message = f"""
-Please analyse the following sprint standup notes and produce a Weekly Sprint Status Report 
+Please analyse the following sprint standup notes and produce a Weekly Sprint Status Report
 following the format and rules in your instructions.
 
 STANDUP NOTES:
 {notes}
 """
 
-    print("Sending standup notes to Gemini API...")
-    print("=" * 60)
-
-    response = model.generate_content(user_message)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+        ),
+        contents=user_message,
+    )
 
     return response.text
 
 
 # =============================================================================
-# SECTION 5: OUTPUT — Print Report to Terminal + Save to File
+# SECTION 6: MAIN — Run the Full AgileIQ Pipeline
+# =============================================================================
+# Execution order:
+#   1. Rule-based blocker detection  (instant, no API needed)
+#   2. Gemini API call               (AI-generated full report)
+#   3. Print both to terminal
+#   4. Save the AI report to a .md file for portfolio evidence
 # =============================================================================
 
 if __name__ == "__main__":
-    # Generate the report
+
+    print("=" * 60)
+    print("  AgileIQ — AI-Powered Sprint Intelligence System")
+    print("=" * 60)
+
+    # ------------------------------------------------------------------
+    # STEP 1: Rule-based blocker detection (runs before the AI call)
+    # ------------------------------------------------------------------
+    print("\n⚠️  STEP 1: RULE-BASED BLOCKER DETECTION")
+    print("-" * 60)
+
+    flagged = detect_blockers(standup_notes)
+
+    if flagged:
+        print(f"  {len(flagged)} genuine blocker(s) detected:\n")
+        for i, line in enumerate(flagged, 1):
+            print(f"  {i}. {line}")
+    else:
+        print("  ✅ No blockers detected in standup notes.")
+
+    print()
+
+    # ------------------------------------------------------------------
+    # STEP 2: Send to Gemini API and generate the full AI report
+    # ------------------------------------------------------------------
+    print("🤖  STEP 2: SENDING TO GEMINI API...")
+    print("-" * 60)
+
     report = generate_sprint_report(standup_notes, SYSTEM_PROMPT)
 
-    # Print to terminal
+    # ------------------------------------------------------------------
+    # STEP 3: Print the AI report to terminal
+    # ------------------------------------------------------------------
+    print("\n📋  AI-GENERATED SPRINT STATUS REPORT")
+    print("=" * 60)
     print(report)
 
-    # Save to a markdown file for portfolio evidence
+    # ------------------------------------------------------------------
+    # STEP 4: Save to markdown file for portfolio evidence
+    # ------------------------------------------------------------------
     output_filename = "sprint_report_output.md"
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(report)
 
-    print("\n" + "=" * 60)
+    print("=" * 60)
     print(f"✅ Report saved to: {output_filename}")
     print("✅ AgileIQ report generation complete.")
+    print("=" * 60)

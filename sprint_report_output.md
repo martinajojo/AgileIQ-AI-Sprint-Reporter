@@ -7,48 +7,48 @@
 ---
 
 ## 1. Sprint Summary
-This week, the team made solid progress on several fronts, including completing the invoice generation endpoint, finalising the invoice dashboard layout, and implementing the PDF export feature. However, a significant external blocker emerged concerning StripeConnect sandbox credentials, which is currently preventing critical payment gateway integration. While the Project Manager is actively escalating this issue and the team is utilising blocked time productively, this situation places the overall sprint goal at risk.
+This week, the team made progress on core sprint objectives, including completion of the invoice generation endpoint and initial work on the PDF export feature. A key external dependency emerged with the payment gateway integration, which is currently blocked awaiting vendor credentials. While the team has pivoted to other tasks to maintain productivity, the unresolved blocker for payment gateway integration introduces a risk to the overall sprint goal. Stakeholders are providing feedback which is being incorporated without significant technical impact.
 
 ---
 
 ## 2. Team Progress Snapshot
-*   **Aiden – Backend Developer:** Completed the invoice generation endpoint and began payment gateway integration, but is now blocked awaiting external credentials.
-*   **Priya – Frontend Developer:** Successfully finished the responsive dashboard layout, integrated the PDF template, and implemented the PDF export button, now addressing a minor formatting bug.
-*   **Callum – QA Engineer:** Completed regression testing for Sprint 1, drafted the payment gateway test plan, reviewed Aiden's work, and commenced exploratory testing, pending payment gateway integration.
-*   **Sasha – UX/UI Designer:** Finalised onboarding flow wireframes, delivered the essential PDF invoice template, and initiated user research interviews for future phases.
-*   **Riya – Product Owner:** Managed stakeholder feedback by updating acceptance criteria for a key user story, confirmed no schema changes were required, groomed the Sprint 3 backlog, and actively escalated the external blocker.
+*   **Aiden – Backend Developer:** Completed the invoice generation endpoint, started payment gateway integration, and later refactored invoice numbering logic while blocked on external credentials.
+*   **Priya – Frontend Developer:** Finalised the responsive layout for the invoice dashboard, successfully started and largely implemented the PDF export button, and is currently addressing a minor formatting issue.
+*   **Callum – QA Engineer:** Completed regression testing for Sprint 1 features, drafted a test plan for the payment gateway, and began exploratory testing, pending completion of backend integration.
+*   **Sasha – UX/UI Designer:** Finalised onboarding flow wireframes, delivered the PDF invoice template to the frontend team, and has moved into user research for Phase 2 features.
+*   **Riya – Product Owner:** Facilitated stakeholder feedback on invoice numbering, updated acceptance criteria, groomed the backlog for Sprint 3, and is actively escalating the external payment gateway blocker.
 
 ---
 
 ## 3. Blockers Flagged 🚨
-*   **Aiden / Payment Gateway Integration:** The team is blocked on receiving sandbox credentials from StripeConnect, preventing progress on the payment gateway integration.
-    *   Status: Active
-    *   Impact: Directly blocks Aiden's work on payment gateway integration (a key Sprint 2 goal) and subsequently blocks Callum's QA efforts for this feature.
+*   **Aiden / Payment Gateway Integration:** The team is blocked on receiving updated sandbox credentials from StripeConnect, an external third-party vendor, preventing further progress on the payment gateway module.
+    *   Status: Active / Escalated
+    *   Impact: Delays the payment gateway integration (a critical path item for Sprint 2), prevents QA from commencing testing, and poses a risk to the overall Sprint 2 deadline.
     *   Days Active: 2
-    *   Owner: Aiden (technical investigation), Riya / PM (external escalation)
+    *   Owner: PM (Martina Jojo), Riya (Product Owner)
 
 ---
 
 ## 4. Risks & Dependencies ⚠️
-*   **Dependency: QA for Payment Gateway:** Callum's ability to begin full QA for the payment gateway functionality is dependent on Aiden completing the integration work.
-*   **Risk: Payment Gateway Integration Delay:** The ongoing blocker with StripeConnect sandbox credentials poses a high risk to completing the payment gateway integration within the planned Sprint 2 timeline. If unresolved, this will impact the overall sprint goal.
+*   **StripeConnect Credentials:** The continued delay in receiving sandbox credentials from StripeConnect is a significant risk. If unresolved soon, it could prevent the completion of the payment gateway integration within Sprint 2, directly impacting the sprint goal.
+*   **Payment Gateway QA Dependency:** Callum's ability to begin comprehensive Quality Assurance for the payment gateway feature is directly dependent on Aiden successfully completing the backend integration, which is currently blocked by the StripeConnect issue.
 
 ---
 
 ## 5. RAG Status
 **Overall Sprint RAG: AMBER**
-**Justification:** The sprint is facing an active external blocker related to StripeConnect sandbox credentials, which is delaying the critical payment gateway integration. While the Project Manager is actively escalating this issue and the team is using the blocked time productively, the resolution timeline remains uncertain, putting the sprint goal at risk.
+**Justification:** The sprint goal is at risk due to an active, external blocker (StripeConnect credentials) impacting a critical path item (payment gateway integration). While the team is managing other tasks and the blocker is being actively escalated by the PM and PO, the uncertainty of resolution for this external dependency justifies an Amber status, indicating potential delays to the Sprint 2 goal.
 
 ---
 
 ## 6. Recommendations
-1.  **Immediate Escalation of StripeConnect Blocker:** The Project Manager should continue aggressive escalation with the StripeConnect vendor relationship manager, seeking an immediate resolution timeframe commitment. (Owner: PM, Timeframe: End of day today).
-2.  **Sprint Goal Impact Assessment:** The Product Owner and Project Manager should conduct a brief sync with Aiden and Callum by end of day to assess the exact impact on the payment gateway feature and Sprint 2 completion if the blocker persists into Thursday. (Owner: Riya/PM, Timeframe: End of day today).
-3.  **Contingency Planning for QA:** Callum should work with the PM to identify potential alternative testing tasks or re-prioritise other QA efforts to minimise idle time if the payment gateway blocker extends further. (Owner: Callum/PM, Timeframe: By end of week).
+1.  **Immediate Vendor Follow-up:** The PM (Martina Jojo) and Product Owner (Riya) should aggressively pursue the StripeConnect credentials with the vendor relationship manager, establishing a clear resolution timeline by end of day Thursday.
+2.  **Contingency Planning for Testing:** Callum (QA Engineer) should, in consultation with Aiden, develop a preliminary contingency plan for testing the payment gateway by end of day Thursday, considering options like mock data or partial integration testing to mitigate further delays if the blocker persists.
+3.  **Stakeholder Communication:** The PM (Martina Jojo) should prepare a brief update for key stakeholders by Thursday morning outlining the StripeConnect blocker, its potential impact on the payment gateway feature, and the actions being taken to resolve it.
 
 ---
 
 ## 7. Next Steps
-*   Secure the StripeConnect sandbox credentials to unblock Aiden's payment gateway integration.
-*   Monitor the progress of the payment gateway integration closely and adjust QA timelines as necessary.
-*   Complete the minor formatting fix for the PDF export button to ensure readiness for demo.
+*   Resolution of the StripeConnect sandbox credentials blocker is the highest priority.
+*   Progress payment gateway integration once unblocked, ensuring seamless transition to QA.
+*   Monitor and resolve the minor formatting issue on the PDF export button.
