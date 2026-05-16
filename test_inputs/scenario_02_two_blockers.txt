@@ -1,0 +1,14 @@
+Day 1 - Monday
+Priya: Working on payment integration module. Blocked — waiting on API credentials from the finance team. Can't proceed until I have access.
+James: Completed the cart UI. Starting on the checkout flow. No blockers.
+Sara: Testing the order summary page. Dependency on Priya's payment module — will be blocked if it slips past Wednesday.
+
+Day 2 - Tuesday
+Priya: Still blocked on payment API credentials. Escalated to project lead. No progress on module.
+James: Checkout flow is 50% complete. No blockers.
+Sara: Completed order summary tests. Now waiting on payment module to continue integration testing — blocked until Priya's piece is ready.
+
+Day 3 - Wednesday
+Priya: Credentials received this morning. Starting integration now — one day behind schedule.
+James: Checkout flow complete. Raising PR. No blockers.
+Sara: Still blocked on integration testing. Dependency on payment module remains. Expecting to resume Thursday.

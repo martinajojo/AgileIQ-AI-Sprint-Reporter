@@ -9,6 +9,9 @@
 from google import genai
 from google.genai import types
 import os
+import sys                          # ← ADDED: needed to read command-line argument
+from dotenv import load_dotenv
+load_dotenv()
 
 # =============================================================================
 # SECTION 1: CONFIGURATION
@@ -27,106 +30,34 @@ if not GEMINI_API_KEY:
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 # =============================================================================
-# SECTION 2: INPUT — Simulated Sprint Standup Notes
+# SECTION 2: INPUT — Read Standup Notes from File
 # =============================================================================
-# This represents one week of daily standup notes from a 5-person Agile team
-# working on Sprint 2 of a fictional SaaS product (InvoiceFlow v2.0).
-# In production, this string would be populated via webhook from OttoKit.
+# The script accepts a file path as a command-line argument.
+# Usage: python agileiq_reporter.py test_inputs/scenario_01_healthy.txt
+#
+# This is Phase 3 testing mode — input comes from a local .txt file.
+# In production (Phase 3 final), this section will be replaced with
+# a webhook receiver from OttoKit, which will POST the standup notes
+# directly to this script. The rest of the pipeline stays identical.
 # =============================================================================
 
-standup_notes = """
-SPRINT 2 — WEEK 2 STANDUP NOTES
-Project: InvoiceFlow v2.0
-Sprint Dates: 5 May 2026 – 16 May 2026
-Compiled by: PM (Martina Jojo)
+if len(sys.argv) < 2:
+    print("=" * 60)
+    print("  AgileIQ — Usage Error")
+    print("=" * 60)
+    print("\n  Please provide a standup notes file as an argument.")
+    print("  Example: python agileiq_reporter.py test_inputs/scenario_01_healthy.txt\n")
+    sys.exit(1)
 
----
+input_file = sys.argv[1]
 
-MONDAY 11 MAY 2026
+if not os.path.exists(input_file):
+    print(f"\n  ❌ File not found: {input_file}")
+    print("  Please check the file path and try again.\n")
+    sys.exit(1)
 
-Aiden (Backend Developer):
-- Yesterday: Completed the invoice generation endpoint (US-14). All unit tests passing.
-- Today: Starting integration with the payment gateway module.
-- Blockers: None.
-
-Priya (Frontend Developer):
-- Yesterday: Finished responsive layout for the invoice dashboard. Tested on mobile and tablet.
-- Today: Starting work on the PDF export button (US-17).
-- Blockers: Waiting on the final PDF template design from the design team — blocked on this since last Thursday. Cannot proceed with US-17 until the template is approved.
-
-Callum (QA Engineer):
-- Yesterday: Completed regression testing for Sprint 1 features. Found 2 minor UI bugs — logged in Jira.
-- Today: Setting up the test plan for the payment gateway flow.
-- Blockers: None currently, but flagging a potential dependency — QA for the payment gateway cannot start until Aiden's integration is complete, expected mid-week.
-
-Sasha (UX/UI Designer):
-- Yesterday: Finalised the onboarding flow wireframes for Phase 2 scope.
-- Today: Working on the PDF invoice template Priya is waiting on. Aiming to have it ready by end of day.
-- Blockers: None.
-
-Riya (Product Owner):
-- Yesterday: Stakeholder review call — feedback received on the invoice numbering format. Client wants sequential numbering with prefix (e.g., INV-0001).
-- Today: Updating the acceptance criteria for US-14 to reflect the new numbering format. Will share with Aiden today.
-- Blockers: None. But flagging: if the numbering format change requires backend schema changes, this could impact the Sprint 2 deadline.
-
----
-
-TUESDAY 12 MAY 2026
-
-Aiden (Backend Developer):
-- Yesterday: Started payment gateway integration. Hit an issue with the sandbox credentials — the third-party vendor hasn't sent the updated keys yet.
-- Today: Blocked — cannot progress on payment gateway integration until we receive sandbox credentials from StripeConnect. Raised a support ticket yesterday (ticket #SC-4421). Estimated resolution: 24–48 hours.
-- Blockers: BLOCKED on StripeConnect sandbox credentials (external dependency). Risk to Sprint goal if not resolved by Wednesday.
-
-Priya (Frontend Developer):
-- Yesterday: Sasha delivered the PDF template — reviewed and approved. Starting US-17 implementation.
-- Today: Continuing PDF export button. Integrating the template into the front end.
-- Blockers: None.
-
-Callum (QA Engineer):
-- Yesterday: Test plan for payment gateway drafted. Shared with Aiden for review.
-- Today: Reviewing Aiden's unit tests for US-14. Also monitoring the blocker on payment gateway — QA timelines will slip if resolution is delayed past Wednesday.
-- Blockers: Indirect dependency on StripeConnect credentials via Aiden's work.
-
-Sasha (UX/UI Designer):
-- Yesterday: Delivered PDF invoice template to Priya. Starting sprint 3 discovery work.
-- Today: User research interviews for Phase 2 features.
-- Blockers: None.
-
-Riya (Product Owner):
-- Yesterday: Updated acceptance criteria for US-14 with new invoice numbering format. Confirmed with Aiden — no schema changes needed, just formatting logic.
-- Today: Grooming backlog for Sprint 3. Reviewing stakeholder feedback document.
-- Blockers: None.
-
----
-
-WEDNESDAY 13 MAY 2026
-
-Aiden (Backend Developer):
-- Yesterday: Still blocked on StripeConnect credentials. Escalated via PM to our account manager.
-- Today: Using blocker time productively — refactoring the invoice numbering logic per Riya's updated acceptance criteria.
-- Blockers: Still blocked on StripeConnect (Day 2). PM to escalate further if not resolved by end of day.
-
-Priya (Frontend Developer):
-- Yesterday: PDF export button implemented. Testing in staging environment now.
-- Today: Fixing a formatting issue — decimal alignment in the invoice line items is off on Firefox. Minor but needs resolving before demo.
-- Blockers: None.
-
-Callum (QA Engineer):
-- Yesterday: Reviewed US-14 unit tests. All passing. Starting exploratory testing on the invoice dashboard.
-- Today: Continuing exploratory testing. Will begin payment gateway test cases as soon as Aiden's integration is unblocked.
-- Blockers: Still dependent on StripeConnect resolution before QA can begin payment gateway testing.
-
-Sasha (UX/UI Designer):
-- Yesterday: Completed 3 user research interviews. Key insight: users want a 'Duplicate Invoice' feature — logging as a backlog item for Sprint 4.
-- Today: Writing up research findings for the Product Owner.
-- Blockers: None.
-
-Riya (Product Owner):
-- Yesterday: Reviewed Sprint 3 backlog. Added 6 new user stories. Shared with team for sizing in Thursday's refinement session.
-- Today: Following up on the StripeConnect escalation with the vendor relationship manager.
-- Blockers: None — but Sprint 2 goal is at amber risk if payment gateway isn't unblocked today.
-"""
+with open(input_file, "r", encoding="utf-8") as f:
+    standup_notes = f.read()
 
 # =============================================================================
 # SECTION 3: PROMPT ENGINEERING — System Prompt for Gemini
@@ -303,6 +234,7 @@ if __name__ == "__main__":
     print("=" * 60)
     print("  AgileIQ — AI-Powered Sprint Intelligence System")
     print("=" * 60)
+    print(f"\n  📂 Input file: {input_file}\n")      # ← shows which file was loaded
 
     # ------------------------------------------------------------------
     # STEP 1: Rule-based blocker detection (runs before the AI call)
@@ -339,7 +271,10 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------
     # STEP 4: Save to markdown file for portfolio evidence
     # ------------------------------------------------------------------
-    output_filename = "sprint_report_output.md"
+    # Output filename is based on the input filename for easy tracking
+    base_name = os.path.splitext(os.path.basename(input_file))[0]
+    output_filename = f"{base_name}_report.md"
+
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(report)
 

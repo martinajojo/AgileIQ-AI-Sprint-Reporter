@@ -1,0 +1,14 @@
+Day 1 - Monday
+Priya: Behind on the reporting module — took longer than expected to understand the data schema. Delayed by at least 2 days. Needs support from the data team.
+James: The third-party analytics SDK is not integrating correctly. Delay expected — possibly 3 days to resolve. Blocked on SDK vendor support response.
+Sara: Design sign-off is still pending from the client. Can't start frontend implementation. Everything is on hold until approval comes through.
+
+Day 2 - Tuesday
+Priya: Data team meeting scheduled for tomorrow. Still delayed. No progress today.
+James: SDK vendor has not responded. Delay continues. Blocked and escalating.
+Sara: Client still hasn't approved designs. Sprint is at risk. Delay now affecting the entire frontend track.
+
+Day 3 - Wednesday
+Priya: Meeting with data team helped — but we're now 3 days behind on the reporting module.
+James: SDK issue partially resolved but needs further testing. Still delayed.
+Sara: Client approved designs but feedback requires 2 revisions. Starting revisions now — behind schedule by 3 days.

@@ -1,0 +1,14 @@
+Day 1 - Monday
+Priya: Completed the user authentication module. Moving to dashboard UI today. No blockers.
+James: Finished API endpoint testing for login flow. Will start on profile page. All good.
+Sara: Merged PR for the notification service. Starting on email templates. No issues.
+
+Day 2 - Tuesday
+Priya: Dashboard layout is 70% done. On track. No blockers.
+James: Profile page frontend is started. Working well with design specs. No blockers.
+Sara: Email templates in progress. Expecting to finish today. No blockers.
+
+Day 3 - Wednesday
+Priya: Dashboard complete and in review. No blockers.
+James: Profile page done, PR raised for review. No blockers.
+Sara: Email templates merged. Moving to push notification flow. No blockers.

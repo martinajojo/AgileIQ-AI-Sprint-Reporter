@@ -1,1 +1,5 @@
 .env
+__pycache__/
+*.pyc
+*_report.md
+sprint_report_output.md
